@@ -1,15 +1,15 @@
 # BridgeAPT
 
-基于 GVP（Geometric Vector Perceptron）+ Transformer 架构的核酸序列生成与筛选工具。输入核酸结构 PDB 文件，生成核酸序列，并通过内嵌的 DeepDNAShape 模块提取 DNA 形状特征，利用聚类算法筛选出与原始结构形状最相似的序列。
+A nucleic acid sequence generation and screening tool based on the GVP (Geometric Vector Perceptron) + Transformer architecture. It takes nucleic acid structure PDB files as input to generate sequences. It features an embedded AptShape module to extract DNA shape features and utilizes clustering algorithms to screen for sequences that most closely resemble the shape of the original structure.
 
-## 安装
+## Installation
 
 ```bash
-cd /path/to/bridgeapt-package
+cd /path/to/BridgeAPT
 pip install -e .
 ```
 
-或使用 conda 环境：
+Alternatively, use a conda environment:
 
 ```bash
 conda env create -f environment.yml
@@ -17,76 +17,73 @@ conda activate bridgeapt
 pip install -e .
 ```
 
-> DeepDNAShape 已内嵌为 `bridgeapt.deepdnashape` 子模块，无需单独安装。
+## Quick Start
 
-## 快速开始
-
-### 仅生成序列
+### Generate Sequences Only
 
 ```bash
 bridgeapt-run -i structure.pdb -o ./output/
 ```
 
-### 生成 + 形状聚类筛选（推荐）
+### Generate + Shape Clustering Screening (Recommended)
 
 ```bash
 bridgeapt-analyze -i structure.pdb -o ./output/
 ```
 
-流程：生成 1000 条序列 → DeepDNAShape 提取形状特征 → K-Means / 层次聚类 / GMM 三种方法聚类 → 输出三种方法均与原始序列同簇的序列（交集）。
+Workflow: Generates 1,000 sequences → Extracts shape features via DeepDNAShape → Clusters using three methods (K-Means / Hierarchical / GMM) → Outputs sequences that fall into the same cluster as the original sequence across all three methods (Intersection).
 
-### 批量处理
+### Batch Processing
 
 ```bash
 bridgeapt-analyze -i ./pdb_files/ -o ./output/
 ```
 
-## 参数说明
-
+## Parameter Descriptions
 ### `bridgeapt-run`
 
-| 参数 | 简写 | 默认值 | 说明 |
+| Parameter | Short | Default | Description |
 |------|------|--------|------|
-| `--input` | `-i` | 必填 | PDB 文件路径或目录 |
-| `--output` | `-o` | 必填 | 输出目录 |
-| `--num-sequences` | `-n` | 1000 | 每个 PDB 生成的序列数量 |
-| `--temperature` | `-t` | 1.0 | 采样温度（越高越随机） |
-| `--length` | `-l` | 自动 | 生成序列长度（默认自动匹配 PDB 残基数） |
-| `--model-path` | `-m` | 内置权重 | 自定义权重文件路径 |
-| `--analyze` | — | 关闭 | 开启形状聚类筛选 |
-| `--clusters` | `-k` | 5 | 聚类数 |
-| `--layer` | — | 7 | DeepDNAShape flanking 层数（0–7） |
+| `--input` | `-i` | Required | Path to PDB file or directory |
+| `--output` | `-o` | Required | Output directory |
+| `--num-sequences` | `-n` | 1000 | Number of sequences generated per PDB |
+| `--temperature` | `-t` | 1.0 | Sampling temperature (higher is more random) |
+| `--length` | `-l` | Auto | Sequence length (matches PDB residue count by default) |
+| `--model-path` | `-m` | Built-in | Path to custom weight file |
+| `--analyze` | — | Off | Enable shape clustering screening |
+| `--clusters` | `-k` | 5 | Number of clusters |
+| `--layer` | — | 7 | AptShape flanking layers (0–7) |
 
-### `bridgeapt-analyze`（完整分析流程）
+### `bridgeapt-analyze`(Full Analysis Workflow)
 
-在 `bridgeapt-run --analyze` 基础上额外支持：
+In addition to `bridgeapt-run --analyze`it supports:
 
-| 参数 | 简写 | 默认值 | 说明 |
+| Parameter | Short | Default | Description |
 |------|------|--------|------|
-| `--features` | `-f` | 8 种 | 要提取的 DNA 形状特征 |
-| `--methods` | — | 全部 | 聚类方法（kmeans hierarchical gmm） |
+| `--features` | `-f` | 8 types | DNA shape features to extract |
+| `--methods` | — | All | Clustering methods (kmeans hierarchical gmm) |
 
-## 输出文件
+## Output Files
 
-运行 `bridgeapt-analyze` 后，输出目录结构如下：
+After running `bridgeapt-analyze`, the output directory structure is as follows:
 
 ```
 output/
 └── {stem}/
-    ├── {stem}_final.txt              # 最终输出：三种方法交集序列（主要结果）
-    ├── {stem}_kmeans_selected.txt    # K-Means 筛选序列
+    ├── {stem}_final.txt              # ain Result: Intersection of the three methods
+    ├── {stem}_kmeans_selected.txt    # K-Means screened sequences
     ├── {stem}_hierarchical_selected.txt
     ├── {stem}_gmm_selected.txt
-    ├── {stem}_kmeans_pca.png         # K-Means 聚类 PCA 图
+    ├── {stem}_kmeans_pca.png         # K-Means clustering PCA plot
     ├── {stem}_hierarchical_pca.png
     ├── {stem}_gmm_pca.png
-    ├── {stem}_kmeans_heatmap.png     # 聚类中心热图
+    ├── {stem}_kmeans_heatmap.png     # Cluster center heatmap
     ├── {stem}_hierarchical_heatmap.png
     ├── {stem}_gmm_heatmap.png
-    └── {stem}_consensus_pca.png      # 最终交集序列综合 PCA 图
+    └── {stem}_consensus_pca.png      # Final intersection consensus PCA plot
 ```
 
-`{stem}_final.txt` 为主要结果，每行一条序列，均与原始 PDB 序列在三种聚类方法下同属一簇。
+`{stem}_final.txt` is the primary output. Each line contains a sequence that belongs to the same cluster as the original PDB sequence under all three clustering methods.
 
 ## Python API
 
@@ -95,22 +92,22 @@ from bridgeapt.runner import Runner
 
 runner = Runner()
 
-# 仅生成序列
+# Generate sequences only
 sequences = runner.run("structure.pdb", num_sequences=1000)
 
-# 生成 + 聚类筛选
+# Generate + Clustering screening
 results = runner.run_with_analysis(
     pdb_path="structure.pdb",
     output_dir="./output",
     num_sequences=1000,
     n_clusters=5,
 )
-consensus = results["consensus"]  # 三种方法交集序列
+consensus = results["consensus"]  # Intersection of the three methods
 ```
 
-## 模型架构
+## Model Architecture
 
-BridgeAPT 使用 GVP 处理三维坐标和二面角特征，结合 Transformer 编码器生成核酸序列。
+BridgeAPT uses GVP to process 3D coordinates and dihedral angle features, combined with a Transformer encoder to generate nucleic acid sequences.
 
 - 输入：PDB 文件中的原子坐标（C4', C1', N1, C2, C5', O5', P）
 - 特征：坐标特征 [B, L, 21] + 二面角 sin/cos 特征 [B, L, 6]
