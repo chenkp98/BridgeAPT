@@ -1,4 +1,4 @@
-name: bridgeapt
+name: transapt
 channels:
   - pytorch
   - conda-forge
@@ -16,4 +16,4 @@ dependencies:
     - seaborn>=0.11
     - tensorflow>=2.8,<2.16
     - umap-learn>=0.5
-    - bridgeapt
+    - transapt
