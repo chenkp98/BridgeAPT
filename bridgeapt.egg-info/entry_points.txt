@@ -1,3 +1,0 @@
-[console_scripts]
-bridgeapt-analyze = bridgeapt.cli:analyze
-bridgeapt-run = bridgeapt.cli:main
