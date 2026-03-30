@@ -1,11 +1,11 @@
-# BridgeAPT
+# TransApt
 
 A nucleic acid sequence generation and screening tool based on the GVP (Geometric Vector Perceptron) + Transformer architecture. It takes nucleic acid structure PDB files as input to generate sequences. It features an embedded AptShape module to extract DNA shape features and utilizes clustering algorithms to screen for sequences that most closely resemble the shape of the original structure.
 
 ## Installation
 
 ```bash
-cd /path/to/BridgeAPT
+cd /path/to/TransApt
 pip install -e .
 ```
 
@@ -13,7 +13,7 @@ Alternatively, use a conda environment:
 
 ```bash
 conda env create -f environment.yml
-conda activate bridgeapt
+conda activate transapt
 pip install -e .
 ```
 
@@ -22,13 +22,13 @@ pip install -e .
 ### Generate Sequences Only
 
 ```bash
-bridgeapt-run -i structure.pdb -o ./output/
+transapt-run -i structure.pdb -o ./output/
 ```
 
 ### Generate + Shape Clustering Screening (Recommended)
 
 ```bash
-bridgeapt-analyze -i structure.pdb -o ./output/
+transapt-analyze -i structure.pdb -o ./output/
 ```
 
 Workflow: Generates 1,000 sequences → Extracts shape features via DeepDNAShape → Clusters using three methods (K-Means / Hierarchical / GMM) → Outputs sequences that fall into the same cluster as the original sequence across all three methods (Intersection).
@@ -36,11 +36,11 @@ Workflow: Generates 1,000 sequences → Extracts shape features via DeepDNAShape
 ### Batch Processing
 
 ```bash
-bridgeapt-analyze -i ./pdb_files/ -o ./output/
+transapt-analyze -i ./pdb_files/ -o ./output/
 ```
 
 ## Parameter Descriptions
-### `bridgeapt-run`
+### `TransApt-run`
 
 | Parameter | Short | Default | Description |
 |------|------|--------|------|
@@ -54,9 +54,9 @@ bridgeapt-analyze -i ./pdb_files/ -o ./output/
 | `--clusters` | `-k` | 5 | Number of clusters |
 | `--layer` | — | 7 | AptShape flanking layers (0–7) |
 
-### `bridgeapt-analyze`(Full Analysis Workflow)
+### `transapt-analyze`(Full Analysis Workflow)
 
-In addition to `bridgeapt-run --analyze`it supports:
+In addition to `transapt-run --analyze`it supports:
 
 | Parameter | Short | Default | Description |
 |------|------|--------|------|
@@ -65,7 +65,7 @@ In addition to `bridgeapt-run --analyze`it supports:
 
 ## Output Files
 
-After running `bridgeapt-analyze`, the output directory structure is as follows:
+After running `TransApt-analyze`, the output directory structure is as follows:
 
 ```
 output/
@@ -88,7 +88,7 @@ output/
 ## Python API
 
 ```python
-from bridgeapt.runner import Runner
+from transapt.runner import Runner
 
 runner = Runner()
 
@@ -107,7 +107,7 @@ consensus = results["consensus"]  # Intersection of the three methods
 
 ## Model Architecture
 
-BridgeAPT uses GVP to process 3D coordinates and dihedral angle features, combined with a Transformer encoder to generate nucleic acid sequences.
+TransApt uses GVP to process 3D coordinates and dihedral angle features, combined with a Transformer encoder to generate nucleic acid sequences.
 
 - Input：Atomic coordinates from PDB files (C4', C1', N1, C2, C5', O5', P)
 - Features: Coordinate features [B, L, 21] + Dihedral sin/cos features [B, L, 6]
