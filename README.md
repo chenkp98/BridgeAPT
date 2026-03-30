@@ -117,7 +117,7 @@ The shape screening module (DeepDNAShape) extracts 8 features by default: MGW, R
 
 ## Dependencies
 
-- Python >= 3.8
+- Python = 3.10
 - torch >= 1.10
 - biopython >= 1.79
 - tensorflow（DeepDNAShape 依赖）
