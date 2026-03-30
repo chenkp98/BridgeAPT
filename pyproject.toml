@@ -3,10 +3,10 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bridgeapt"
+name = "transapt"
 version = "0.1.0"
 description = "Nucleic acid sequence generation from 3D structure using GVP + Transformer"
-requires-python = ">=3.8"
+requires-python = "=3.10"
 dependencies = [
     "torch>=1.10",
     "biopython>=1.79",
@@ -20,15 +20,15 @@ dependencies = [
 ]
 
 [project.scripts]
-bridgeapt-run = "bridgeapt.cli:main"
-bridgeapt-analyze = "bridgeapt.cli:analyze"
+transapt-run = "transapt.cli:main"
+transapt-analyze = "transapt.cli:analyze"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["bridgeapt*"]
+include = ["transapt*"]
 
 [tool.setuptools.package-data]
-bridgeapt = ["weights/*.pth", "example/*.pdb", "example/*.pt", "aptshape/params.json", "aptshape/models/*"]
+transapt = ["weights/*.pth", "example/*.pdb", "example/*.pt", "aptshape/params.json", "aptshape/models/*"]
 
 [project.optional-dependencies]
 test = ["pytest>=7.0", "hypothesis>=6.0"]
